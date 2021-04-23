@@ -9,14 +9,14 @@ from base64 import b64encode
 API_URL = 'https://tarea2-cross3.herokuapp.com'
 
 
-flask_app = Flask(__name__)
-flask_app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:ross1963@localhost/iic3103_tarea2'
-flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:ross1963@localhost/iic3103_tarea2'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 # TABLES
 
-db = SQLAlchemy(flask_app)
-ma = Marshmallow(flask_app)
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
 
 
 def get_id(name, parent_id=None):
@@ -109,7 +109,7 @@ db.create_all()
 
 
 # ROUTES
-@flask_app.route('/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def hello():
   response = {"Title": "Tarea 2 de Taller de Integración", "Author": "Clemente Ross"}
   return jsonify(response), 200
@@ -117,7 +117,7 @@ def hello():
 # GET
 
 # ARTISTS
-@flask_app.route('/artists', methods=['GET'])
+@app.route('/artists', methods=['GET'])
 def get_all_artists():
   if request.method != 'GET':
     response = {"Error message": "Method Not Allowed"}
@@ -128,7 +128,7 @@ def get_all_artists():
   
   return artists_schema.jsonify(result), 200
 
-@flask_app.route('/artists/<artist_id>', methods=['GET'])
+@app.route('/artists/<artist_id>', methods=['GET'])
 def get_artist_by_id(artist_id):
   if request.method != 'GET':
     response = {"Error message": "Method Not Allowed"}
@@ -138,7 +138,7 @@ def get_artist_by_id(artist_id):
 
   return artist_schema.jsonify(artist), 200
 
-@flask_app.route('/artists/<artist_id>/albums', methods=['GET'])
+@app.route('/artists/<artist_id>/albums', methods=['GET'])
 def get_albums_by_artist_id(artist_id):
   if request.method != 'GET':
     response = {"Error message": "Method Not Allowed"}
@@ -150,7 +150,7 @@ def get_albums_by_artist_id(artist_id):
 
   return albums_schema.jsonify(result), 200
 
-@flask_app.route('/artists/<artist_id>/tracks', methods=['GET'])
+@app.route('/artists/<artist_id>/tracks', methods=['GET'])
 def get_tracks_by_artist_id(artist_id):
   if request.method != 'GET':
     response = {"Error message": "Method Not Allowed"}
@@ -163,7 +163,7 @@ def get_tracks_by_artist_id(artist_id):
   return tracks_schema.jsonify(result), 200
 
 # ALBUMS
-@flask_app.route('/albums', methods=['GET'])
+@app.route('/albums', methods=['GET'])
 def get_all_albums():
   if request.method != 'GET':
     response = {"Error message": "Method Not Allowed"}
@@ -174,7 +174,7 @@ def get_all_albums():
 
   return albums_schema.jsonify(result), 200
 
-@flask_app.route('/albums/<album_id>', methods=['GET'])
+@app.route('/albums/<album_id>', methods=['GET'])
 def get_album_by_id(album_id):
   if request.method != 'GET':
     response = {"Error message": "Method Not Allowed"}
@@ -184,7 +184,7 @@ def get_album_by_id(album_id):
 
   return album_schema.jsonify(album), 200
 
-@flask_app.route('/albums/<album_id>/tracks', methods=['GET'])
+@app.route('/albums/<album_id>/tracks', methods=['GET'])
 def get_tracks_by_album_id(album_id):
   if request.method != 'GET':
     response = {"Error message": "Method Not Allowed"}
@@ -197,7 +197,7 @@ def get_tracks_by_album_id(album_id):
   return tracks_schema.jsonify(result), 200
 
 # TRACKS
-@flask_app.route('/tracks', methods=['GET'])
+@app.route('/tracks', methods=['GET'])
 def get_all_tracks():
   if request.method != 'GET':
     response = {"Error message": "Method Not Allowed"}
@@ -208,7 +208,7 @@ def get_all_tracks():
 
   return tracks_schema.jsonify(result), 200
 
-@flask_app.route('/tracks/<track_id>', methods=['GET'])
+@app.route('/tracks/<track_id>', methods=['GET'])
 def get_track_by_id(track_id):
   if request.method != 'GET':
     response = {"Error message": "Method Not Allowed"}
@@ -222,7 +222,7 @@ def get_track_by_id(track_id):
 # POST
 
 # ARTIST
-@flask_app.route('/artists', methods=['POST'])
+@app.route('/artists', methods=['POST'])
 def create_artist():
   if request.method != 'POST':
     response = {"Error message": "Method Not Allowed"}
@@ -247,7 +247,7 @@ def create_artist():
   return artist_schema.jsonify(new_artist), 201
 
 # ALBUM
-@flask_app.route('/artists/<artist_id>/albums', methods=['POST'])
+@app.route('/artists/<artist_id>/albums', methods=['POST'])
 def create_album(artist_id):
   if request.method != 'POST':
     response = {"Error message": "Method Not Allowed"}
@@ -283,7 +283,7 @@ def create_album(artist_id):
   return album_schema.jsonify(new_album), 201
 
 # TRACK
-@flask_app.route('/albums/<album_id>/tracks', methods=['POST'])
+@app.route('/albums/<album_id>/tracks', methods=['POST'])
 def create_track(album_id):
   if request.method != 'POST':
     response = {"Error message": "Method Not Allowed"}
@@ -322,7 +322,7 @@ def create_track(album_id):
 # PUT
 
 # ARTIST
-@flask_app.route('/artists/<artist_id>/albums/play', methods=['PUT'])
+@app.route('/artists/<artist_id>/albums/play', methods=['PUT'])
 def play_all_tracks_by_artist_id(artist_id):
   if request.method != 'PUT':
     response = {"Error message": "Method Not Allowed"}
@@ -349,7 +349,7 @@ def play_all_tracks_by_artist_id(artist_id):
   return tracks_schema.jsonify(result), 200
 
 # ALBUM
-@flask_app.route('/albums/<album_id>/tracks/play', methods=['PUT'])
+@app.route('/albums/<album_id>/tracks/play', methods=['PUT'])
 def play_all_tracks_by_album_id(album_id):
   if request.method != 'PUT':
     response = {"Error message": "Method Not Allowed"}
@@ -376,7 +376,7 @@ def play_all_tracks_by_album_id(album_id):
   return tracks_schema.jsonify(result), 200
 
 # TRACK
-@flask_app.route('/tracks/<track_id>/play', methods=['PUT'])
+@app.route('/tracks/<track_id>/play', methods=['PUT'])
 def play_track_by_id(track_id):
   if request.method != 'PUT':
     response = {"Error message": "Method Not Allowed"}
@@ -396,7 +396,7 @@ def play_track_by_id(track_id):
 # DELETE
 
 # ARTIST
-@flask_app.route('/artists/<artist_id>', methods=['DELETE'])
+@app.route('/artists/<artist_id>', methods=['DELETE'])
 def delete_artist(artist_id):
   if request.method != 'DELETE':
     response = {"Error message": "Method Not Allowed"}
@@ -418,7 +418,7 @@ def delete_artist(artist_id):
 
   return artist_schema.jsonify(artist), 204
 
-@flask_app.route('/albums/<album_id>', methods=['DELETE'])
+@app.route('/albums/<album_id>', methods=['DELETE'])
 def delete_album(album_id):
   if request.method != 'DELETE':
     response = {"Error message": "Method Not Allowed"}
@@ -435,7 +435,7 @@ def delete_album(album_id):
 
   return album_schema.jsonify(album), 204
 
-@flask_app.route('/tracks/<track_id>', methods=['DELETE'])
+@app.route('/tracks/<track_id>', methods=['DELETE'])
 def delete_track(track_id):
   if request.method != 'DELETE':
     response = {"Error message": "Method Not Allowed"}
@@ -449,4 +449,4 @@ def delete_track(track_id):
 
 
 if __name__ == '__main__':
-    flask_app.run(debug=True, port=8000)
+    app.run(debug=True, port=8000)
