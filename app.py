@@ -6,7 +6,7 @@ from base64 import b64encode
 
 #APP
 
-API_URL = 'http://localhost:8000'
+API_URL = 'https://tarea2-cross3.herokuapp.com'
 
 
 flask_app = Flask(__name__)
