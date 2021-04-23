@@ -109,6 +109,10 @@ db.create_all()
 
 
 # ROUTES
+@flask_app.route('/', methods=['GET'])
+def hello():
+  response = {"Title": "Tarea 2 de Taller de Integración", "Author": "Clemente Ross"}
+  return jsonify(response), 200
 
 # GET
 
