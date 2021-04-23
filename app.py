@@ -10,7 +10,7 @@ API_URL = 'https://tarea2-cross3.herokuapp.com'
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:ross1963@localhost/iic3103_tarea2'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:ross1963@tarea2-cross3.herokuapp.com/iic3103_tarea2'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 # TABLES
