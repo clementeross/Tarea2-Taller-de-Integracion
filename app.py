@@ -30,17 +30,17 @@ def get_id(name, parent_id=None):
 
 class ArtistSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'name', 'age', 'albums', 'tracks', 'self_url')
+    fields = ('name', 'age', 'albums', 'tracks', 'self')
 
 
 class AlbumSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'name', 'genre', 'artist', 'tracks', 'self_url')
+    fields = ('name', 'genre', 'artist', 'tracks', 'self')
 
 
 class TrackSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'name', 'duration', 'times_played', 'artist', 'album', 'self_url')
+    fields = ('name', 'duration', 'times_played', 'artist', 'album', 'self')
 
 
 artist_schema = ArtistSchema()
@@ -357,7 +357,7 @@ def delete_artist(artist_id):
 
   db.session.commit()
 
-  return artist_schema.jsonify(artist), 204
+  return None, 204
 
 @app.route('/albums/<album_id>', methods=['DELETE'])
 def delete_album(album_id):
@@ -375,7 +375,7 @@ def delete_album(album_id):
 
   db.session.commit()
 
-  return album_schema.jsonify(album), 204
+  return None, 204
 
 @app.route('/tracks/<track_id>', methods=['DELETE'])
 def delete_track(track_id):
@@ -387,7 +387,7 @@ def delete_track(track_id):
   db.session.delete(track)
   db.session.commit()
 
-  return track_schema.jsonify(track), 204
+  return None, 204
 
 
 # NOT ALLOWED METHODS
