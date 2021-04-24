@@ -2,6 +2,7 @@ from flask import Flask, request, Response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from base64 import b64encode
+import json
 
 
 #APP
@@ -120,9 +121,12 @@ def hello():
 @app.route('/artists', methods=['GET'])
 def get_all_artists():
   all_artists = Artist.query.all()
-  result = artists_schema.dump(all_artists)
+  result = []
+  for artist in all_artists:
+    dic = {'name': artist.name, 'age': artist.age, 'albums': artist.albums, 'tracks': arist.tracks, 'self': artist.self_url}
+    result.append(dic)
   
-  return artists_schema.jsonify(result), 200
+  return json.dumps(result), 200
 
 @app.route('/artists/<artist_id>', methods=['GET'])
 def get_artist_by_id(artist_id):
