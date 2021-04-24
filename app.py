@@ -111,7 +111,7 @@ class Track(db.Model):
 # ROUTES
 @app.route('/', methods=['GET'])
 def hello():
-  response = {"Title": "Tarea 2 de Taller de Integración", "Author": "Clemente Ross"}
+  response = {"Title": "Tarea 2 de Taller de Integracion", "Author": "Clemente Ross"}
   return jsonify(response), 200
 
 # GET
@@ -119,10 +119,6 @@ def hello():
 # ARTISTS
 @app.route('/artists', methods=['GET'])
 def get_all_artists():
-  if request.method != 'GET':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   all_artists = Artist.query.all()
   result = artists_schema.dump(all_artists)
   
@@ -130,45 +126,41 @@ def get_all_artists():
 
 @app.route('/artists/<artist_id>', methods=['GET'])
 def get_artist_by_id(artist_id):
-  if request.method != 'GET':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   artist = Artist.query.get(artist_id)
-
-  return artist_schema.jsonify(artist), 200
+  
+  if artist:
+    return artist_schema.jsonify(artist), 200
+  
+  response = {"Error Message": "Arist ID not found"}
+  return jsonify(response), 404
 
 @app.route('/artists/<artist_id>/albums', methods=['GET'])
 def get_albums_by_artist_id(artist_id):
-  if request.method != 'GET':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   all_albums = Album.query.all()
   albums_filter = [album for album in all_albums if '%s/artists/%s' % (API_URL, artist_id) == album.artist]
-  result = albums_schema.dump(albums_filter)
-
-  return albums_schema.jsonify(result), 200
+  
+  if albums_filter:
+    result = albums_schema.dump(albums_filter)
+    return albums_schema.jsonify(result), 200
+  
+  response = {"Error Message": "Artist ID not found"}
+  return jsonify(response), 404
 
 @app.route('/artists/<artist_id>/tracks', methods=['GET'])
 def get_tracks_by_artist_id(artist_id):
-  if request.method != 'GET':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   all_tracks = Track.query.all()
   tracks_filter = [track for track in all_tracks if '%s/artists/%s' % (API_URL, artist_id) == track.artist]
-  result = tracks_schema.dump(tracks_filter)
 
-  return tracks_schema.jsonify(result), 200
+  if tracks_filter:
+    result = tracks_schema.dump(tracks_filter)
+    return tracks_schema.jsonify(result), 200
+  
+  response = {"Error Message": "Artist ID not found"}
+  return jsonify(response), 404
 
 # ALBUMS
 @app.route('/albums', methods=['GET'])
 def get_all_albums():
-  if request.method != 'GET':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   all_albums = Album.query.all()
   result = albums_schema.dump(all_albums)
 
@@ -176,33 +168,29 @@ def get_all_albums():
 
 @app.route('/albums/<album_id>', methods=['GET'])
 def get_album_by_id(album_id):
-  if request.method != 'GET':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   album = Album.query.get(album_id)
 
-  return album_schema.jsonify(album), 200
+  if album:
+    return album_schema.jsonify(album), 200
+  
+  response = {"Error Message": "Album ID not found"}
+  return jsonify(response), 404
 
 @app.route('/albums/<album_id>/tracks', methods=['GET'])
 def get_tracks_by_album_id(album_id):
-  if request.method != 'GET':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   all_tracks = Track.query.all()
   tracks_filter = [track for track in all_tracks if '%s/albums/%s' % (API_URL, album_id) == track.album]
-  result = tracks_schema.dump(tracks_filter)
 
-  return tracks_schema.jsonify(result), 200
+  if tracks_filter:
+    result = tracks_schema.dump(tracks_filter)
+    return tracks_schema.jsonify(result), 200
+  
+  response = {"Error Message": "Album ID not found"}
+  return jsonify(response), 404
 
 # TRACKS
 @app.route('/tracks', methods=['GET'])
 def get_all_tracks():
-  if request.method != 'GET':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   all_tracks = Track.query.all()
   result = tracks_schema.dump(all_tracks)
 
@@ -210,13 +198,13 @@ def get_all_tracks():
 
 @app.route('/tracks/<track_id>', methods=['GET'])
 def get_track_by_id(track_id):
-  if request.method != 'GET':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   track = Track.query.get(track_id)
 
-  return track_schema.jsonify(track), 200
+  if track:
+    return track_schema.jsonify(track), 200
+  
+  response = {"Error Message": "Track ID not found"}
+  return jsonify(response), 404
 
 
 # POST
@@ -224,10 +212,6 @@ def get_track_by_id(track_id):
 # ARTIST
 @app.route('/artists', methods=['POST'])
 def create_artist():
-  if request.method != 'POST':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   try:
     name = request.json['name']
     age = request.json['age']
@@ -249,18 +233,8 @@ def create_artist():
 # ALBUM
 @app.route('/artists/<artist_id>/albums', methods=['POST'])
 def create_album(artist_id):
-  if request.method != 'POST':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
-  all_artists = Artist.query.all()
-  found = False
-  for artist in all_artists:
-    if artist.id == artist_id:
-      found = True
-      break
-  
-  if not found:
+  artist = Artist.query.get(artist_id)
+  if not artist:
     response = {"Error message": "Artist ID not found"}
     return jsonify(response), 422
 
@@ -285,18 +259,8 @@ def create_album(artist_id):
 # TRACK
 @app.route('/albums/<album_id>/tracks', methods=['POST'])
 def create_track(album_id):
-  if request.method != 'POST':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
-  all_albums = Album.query.all()
-  found = False
-  for album in all_albums:
-    if album.id == album_id:
-      found = True
-      break
-  
-  if not found:
+  album = Album.query.get(album_id)
+  if not album:
     response = {"Error message": "Album ID not found"}
     return jsonify(response), 422
 
@@ -324,18 +288,8 @@ def create_track(album_id):
 # ARTIST
 @app.route('/artists/<artist_id>/albums/play', methods=['PUT'])
 def play_all_tracks_by_artist_id(artist_id):
-  if request.method != 'PUT':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
-  all_artists = Artist.query.all()
-  found = False
-  for artist in all_artists:
-    if artist.id == artist_id:
-      found = True
-      break
-  
-  if not found:
+  artist = Artist.query.get(artist_id)
+  if not artist:
     response = {"Error message": "Artist ID not found"}
     return jsonify(response), 404
 
@@ -351,18 +305,8 @@ def play_all_tracks_by_artist_id(artist_id):
 # ALBUM
 @app.route('/albums/<album_id>/tracks/play', methods=['PUT'])
 def play_all_tracks_by_album_id(album_id):
-  if request.method != 'PUT':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
-  all_albums = Album.query.all()
-  found = False
-  for album in all_albums:
-    if album.id == album_id:
-      found = True
-      break
-  
-  if not found:
+  album = Album.query.get(album_id)
+  if not album:
     response = {"Error message": "Album ID not found"}
     return jsonify(response), 404
 
@@ -378,10 +322,6 @@ def play_all_tracks_by_album_id(album_id):
 # TRACK
 @app.route('/tracks/<track_id>/play', methods=['PUT'])
 def play_track_by_id(track_id):
-  if request.method != 'PUT':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   track = Track.query.get(track_id)
   if not track:
     response = {"Error message": "Track ID not found"}
@@ -398,9 +338,12 @@ def play_track_by_id(track_id):
 # ARTIST
 @app.route('/artists/<artist_id>', methods=['DELETE'])
 def delete_artist(artist_id):
-  if request.method != 'DELETE':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
+  artist = Artist.query.get(artist_id)
+  if not artist:
+    response = {"Error Message": "Artist ID not found"}
+    return jsonify(response), 404
+  
+  db.session.delete(artist)
 
   all_albums = Album.query.all()
   albums_filter = [album for album in all_albums if '%s/artists/%s' % (API_URL, artist_id) == album.artist]
@@ -412,41 +355,103 @@ def delete_artist(artist_id):
   for track in tracks_filter:
     db.session.delete(track)
 
-  artist = Artist.query.get(artist_id)
-  db.session.delete(artist)
   db.session.commit()
 
   return artist_schema.jsonify(artist), 204
 
 @app.route('/albums/<album_id>', methods=['DELETE'])
 def delete_album(album_id):
-  if request.method != 'DELETE':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
+  album = Album.query.get(album_id)
+  if not album:
+    response = {"Error Message": "Album ID not found"}
+    return jsonify(response), 404
+  
+  db.session.delete(album)
 
   all_tracks = Track.query.all()
   tracks_filter = [track for track in all_tracks if '%s/albums/%s' % (API_URL, album_id) == track.album]
   for track in tracks_filter:
     db.session.delete(track)
 
-  album = Album.query.get(album_id)
-  db.session.delte(album)
   db.session.commit()
 
   return album_schema.jsonify(album), 204
 
 @app.route('/tracks/<track_id>', methods=['DELETE'])
 def delete_track(track_id):
-  if request.method != 'DELETE':
-    response = {"Error message": "Method Not Allowed"}
-    return jsonify(response), 405
-
   track = Track.query.get(id)
+  if not track:
+    response = {"Error Message": "Track ID not found"}
+    return jsonify(response), 404
+  
   db.session.delete(track)
   db.session.commit()
 
   return track_schema.jsonify(track), 204
 
 
+# NOT ALLOWED METHODS
+
+@app.route('/artists', methods=['PUT', 'PATCH', 'DELETE'])
+def not_allowed_1():
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/artists/<artist_id>', methods=['POST', 'PUT', 'PATCH'])
+def not_allowed_2(artist_id):
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/artists/<artist_id>/albums', methods=['PUT', 'PATCH', 'DELETE'])
+def not_allowed_3(artist_id):
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/artists/<artist_id>/tracks', methods=['POST', 'PUT', 'PATCH', 'DELETE'])
+def not_allowed_4(artist_id):
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/albums', methods=['POST', 'PUT', 'PATCH', 'DELETE'])
+def not_allowed_5():
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/albums/<album_id>', methods=['POST', 'PUT', 'PATCH'])
+def not_allowed_6(album_id):
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/albums/<album_id>/tracks', methods=['PUT', 'PATCH', 'DELETE'])
+def not_allowed_7(album_id):
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/tracks', methods=['POST', 'PUT', 'PATCH', 'DELETE'])
+def not_allowed_8():
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/tracks/<track_id>', methods=['POST', 'PUT', 'PATCH'])
+def not_allowed_9(track_id):
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/artists/<artist_id>/albums/play', methods=['GET', 'POST', 'PATCH', 'DELETE'])
+def not_allowed_10(artist_id):
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/artists/<artist_id>/tracks/play', methods=['GET', 'POST', 'PATCH', 'DELETE'])
+def not_allowed_11(artist_id):
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+@app.route('/tracks/<track_id>/play', methods=['GET', 'POST', 'PATCH', 'DELETE'])
+def not_allowed_12(artist_id):
+  response = {"Error Message": "Method Not Allowed"}
+  return jsonify(response), 405
+
+
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(debug=True)
