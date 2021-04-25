@@ -230,8 +230,9 @@ def create_artist():
     name = request.json['name']
     age = request.json['age']
     new_artist = Artist(name, age)
-  except:
-    return '', 400
+  except Exception as err:
+    dic = {"Error": err}
+    return json.dumps(dic), 400
 
   artist_same_id = Artist.query.get(new_artist.id)
   if artist_same_id:
