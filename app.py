@@ -231,7 +231,7 @@ def create_artist():
     age = request.json['age']
     new_artist = Artist(name, age)
   except Exception as err:
-    dic = {"Error": err}
+    dic = {"Error": str(err)}
     return json.dumps(dic), 400
 
   artist_same_id = Artist.query.get(new_artist.id)
