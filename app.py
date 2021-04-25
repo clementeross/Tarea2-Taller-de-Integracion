@@ -6,7 +6,7 @@ import json
 
 
 # APP
-API_URl = 'https://tarea2-cross3.herokuapp.com'
+API_URL = 'https://tarea2-cross3.herokuapp.com'
 # API_URL = ''
 
 
@@ -230,9 +230,8 @@ def create_artist():
     name = request.json['name']
     age = request.json['age']
     new_artist = Artist(name, age)
-  except Exception as err:
-    dic = {"Error": str(err)}
-    return json.dumps(dic), 400
+  except:
+    return '', 400
 
   artist_same_id = Artist.query.get(new_artist.id)
   if artist_same_id:
