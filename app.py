@@ -107,7 +107,7 @@ class Track(db.Model):
     self.self_url = "%s/tracks/%s" % (API_URL, self.id)
 
 
-db.create_all()
+# db.create_all()
 
 
 # ROUTES
