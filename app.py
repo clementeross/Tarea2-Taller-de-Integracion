@@ -387,7 +387,7 @@ def delete_album(album_id):
 
 @app.route('/tracks/<track_id>', methods=['DELETE'])
 def delete_track(track_id):
-  track = Track.query.get(id)
+  track = Track.query.get(track_id)
   if not track:
     return '', 404
   
