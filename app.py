@@ -12,6 +12,7 @@ API_URl = 'https://tarea2-cross3.herokuapp.com'
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='postgresql://fhvzicwnvvpgoe:7c0f9dedd7dbc78f6bf63e7be2a0213cf70dabdd49c53af645d7dd879f4156ec@ec2-54-90-211-192.compute-1.amazonaws.com:5432/d734kvsp6ihc0e'
+
 # app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:ross1963@localhost/tarea2'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
@@ -107,7 +108,7 @@ class Track(db.Model):
     self.self_url = "%s/tracks/%s" % (API_URL, self.id)
 
 
-# db.create_all()
+db.create_all()
 
 
 # ROUTES
