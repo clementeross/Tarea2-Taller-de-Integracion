@@ -6,13 +6,13 @@ import json
 
 
 # APP
-API_URl = 'https://tarea2-cross3.herokuapp.com'
-# API_URL = ''
+# API_URl = 'https://tarea2-cross3.herokuapp.com'
+API_URL = ''
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://fhvzicwnvvpgoe:7c0f9dedd7dbc78f6bf63e7be2a0213cf70dabdd49c53af645d7dd879f4156ec@ec2-54-90-211-192.compute-1.amazonaws.com:5432/d734kvsp6ihc0e'
-# app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:ross1963@localhost/tarea2'
+# app.config['SQLALCHEMY_DATABASE_URI']='postgresql://fhvzicwnvvpgoe:7c0f9dedd7dbc78f6bf63e7be2a0213cf70dabdd49c53af645d7dd879f4156ec@ec2-54-90-211-192.compute-1.amazonaws.com:5432/d734kvsp6ihc0e'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:ross1963@localhost/tarea2'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 # TABLES
@@ -133,13 +133,13 @@ def get_artist_by_id(artist_id):
     dic = {'name': artist.name, 'age': artist.age, 'albums': artist.albums, 'tracks': artist.tracks, 'self': artist.self_url}
     return json.dumps(dic), 200
   
-  return None, 404
+  return '', 404
 
 @app.route('/artists/<artist_id>/albums', methods=['GET'])
 def get_albums_by_artist_id(artist_id):
   artist = Artist.query.get(artist_id)
   if not artist:
-    return None, 404
+    return '', 404
   
   result = []
   all_albums = Album.query.all()
@@ -153,7 +153,7 @@ def get_albums_by_artist_id(artist_id):
 def get_tracks_by_artist_id(artist_id):
   artist = Artist.query.get(artist_id)
   if not artist:
-    return None, 404
+    return '', 404
 
   result = []
   all_tracks = Track.query.all()
@@ -182,13 +182,13 @@ def get_album_by_id(album_id):
     dic = {'name': album.name, 'genre': album.genre, 'artist': album.artist, 'tracks': album.tracks, 'self': album.self_url}
     return json.dumps(dic), 200
   
-  return None, 404
+  return '', 404
 
 @app.route('/albums/<album_id>/tracks', methods=['GET'])
 def get_tracks_by_album_id(album_id):
   album = Album.query.get(album_id)
   if not album:
-    return None, 404
+    return '', 404
   
   result = []
   all_tracks = Track.query.all()
@@ -217,7 +217,7 @@ def get_track_by_id(track_id):
     dic = {'name': track.name, 'duration': track.duration, 'times_played': track.times_played, 'artist': track.artist, 'album': track.album, 'self': track.self_url}
     return json.dumps(dic), 200
   
-  return None, 404
+  return '', 404
 
 
 # POST
@@ -230,7 +230,7 @@ def create_artist():
     age = request.json['age']
     new_artist = Artist(name, age)
   except:
-    return None, 400
+    return '', 400
 
   artist_same_id = Artist.query.get(new_artist.id)
   if artist_same_id:
@@ -249,14 +249,14 @@ def create_artist():
 def create_album(artist_id):
   artist = Artist.query.get(artist_id)
   if not artist:
-    return None, 422
+    return '', 422
 
   try:
     name = request.json['name']
     genre = request.json['genre']
     new_album = Album(name, genre, artist_id)
   except:
-    return None, 400
+    return '', 400
 
   album_same_id = Album.query.get(new_album.id)
   if album_same_id:
@@ -275,14 +275,14 @@ def create_album(artist_id):
 def create_track(album_id):
   album = Album.query.get(album_id)
   if not album:
-    return None, 422
+    return '', 422
 
   try:
     name = request.json['name']
     duration = request.json['duration']
     new_track = Track(name, duration, album_id)
   except:
-    return None, 400
+    return '', 400
 
   track_same_id = Track.query.get(new_track.id)
   if track_same_id:
@@ -304,7 +304,7 @@ def create_track(album_id):
 def play_all_tracks_by_artist_id(artist_id):
   artist = Artist.query.get(artist_id)
   if not artist:
-    return None, 404
+    return '', 404
 
   all_tracks = Track.query.all()
   tracks_filter = [track for track in all_tracks if '%s/artists/%s' % (API_URL, artist_id) == track.artist]
@@ -312,14 +312,14 @@ def play_all_tracks_by_artist_id(artist_id):
     track.times_played += 1
   db.session.commit()
 
-  return None, 200
+  return '', 200
 
 # ALBUM
 @app.route('/albums/<album_id>/tracks/play', methods=['PUT'])
 def play_all_tracks_by_album_id(album_id):
   album = Album.query.get(album_id)
   if not album:
-    return None, 404
+    return '', 404
 
   all_tracks = Track.query.all()
   tracks_filter = [track for track in all_tracks if '%s/albums/%s' % (API_URL, album_id) == track.album]
@@ -327,19 +327,19 @@ def play_all_tracks_by_album_id(album_id):
     track.times_played += 1
   db.session.commit()
 
-  return None, 200
+  return '', 200
 
 # TRACK
 @app.route('/tracks/<track_id>/play', methods=['PUT'])
 def play_track_by_id(track_id):
   track = Track.query.get(track_id)
   if not track:
-    return None, 404
+    return '', 404
   
   track.times_played += 1
   db.session.commit()
 
-  return None, 200
+  return '', 200
 
 
 # DELETE
@@ -349,7 +349,7 @@ def play_track_by_id(track_id):
 def delete_artist(artist_id):
   artist = Artist.query.get(artist_id)
   if not artist:
-    return None, 404
+    return '', 404
   
   db.session.delete(artist)
 
@@ -365,13 +365,13 @@ def delete_artist(artist_id):
 
   db.session.commit()
 
-  return None, 204
+  return '', 204
 
 @app.route('/albums/<album_id>', methods=['DELETE'])
 def delete_album(album_id):
   album = Album.query.get(album_id)
   if not album:
-    return None, 404
+    return '', 404
   
   db.session.delete(album)
 
@@ -382,69 +382,69 @@ def delete_album(album_id):
 
   db.session.commit()
 
-  return None, 204
+  return '', 204
 
 @app.route('/tracks/<track_id>', methods=['DELETE'])
 def delete_track(track_id):
   track = Track.query.get(id)
   if not track:
-    return None, 404
+    return '', 404
   
   db.session.delete(track)
   db.session.commit()
 
-  return None, 204
+  return '', 204
 
 
 # NOT ALLOWED METHODS
 
 @app.route('/artists', methods=['PUT', 'PATCH', 'DELETE'])
 def not_allowed_1():
-  return None, 405
+  return '', 405
 
 @app.route('/artists/<artist_id>', methods=['POST', 'PUT', 'PATCH'])
 def not_allowed_2(artist_id):
-  return None, 405
+  return '', 405
 
 @app.route('/artists/<artist_id>/albums', methods=['PUT', 'PATCH', 'DELETE'])
 def not_allowed_3(artist_id):
-  return None, 405
+  return '', 405
 
 @app.route('/artists/<artist_id>/tracks', methods=['POST', 'PUT', 'PATCH', 'DELETE'])
 def not_allowed_4(artist_id):
-  return None, 405
+  return '', 405
 
 @app.route('/albums', methods=['POST', 'PUT', 'PATCH', 'DELETE'])
 def not_allowed_5():
-  return None, 405
+  return '', 405
 
 @app.route('/albums/<album_id>', methods=['POST', 'PUT', 'PATCH'])
 def not_allowed_6(album_id):
-  return None, 405
+  return '', 405
 
 @app.route('/albums/<album_id>/tracks', methods=['PUT', 'PATCH', 'DELETE'])
 def not_allowed_7(album_id):
-  return None, 405
+  return '', 405
 
 @app.route('/tracks', methods=['POST', 'PUT', 'PATCH', 'DELETE'])
 def not_allowed_8():
-  return None, 405
+  return '', 405
 
 @app.route('/tracks/<track_id>', methods=['POST', 'PUT', 'PATCH'])
 def not_allowed_9(track_id):
-  return None, 405
+  return '', 405
 
 @app.route('/artists/<artist_id>/albums/play', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def not_allowed_10(artist_id):
-  return None, 405
+  return '', 405
 
 @app.route('/artists/<artist_id>/tracks/play', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def not_allowed_11(artist_id):
-  return None, 405
+  return '', 405
 
 @app.route('/tracks/<track_id>/play', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def not_allowed_12(artist_id):
-  return None, 405
+  return '', 405
 
 
 if __name__ == '__main__':
