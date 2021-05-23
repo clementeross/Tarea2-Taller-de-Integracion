@@ -1,0 +1,74 @@
+.chat {
+  max-width: 300px;
+  height: 100%;
+  min-height: 50vh;
+  max-height: 50vh;
+  overflow: scroll;
+  border: 2px solid black;
+}
+
+.chatContainer {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.container {
+  margin: 1%;
+}
+
+.wrapper2 {
+  display: flex;
+  flex-flow: row;
+}
+
+.inputName {
+  margin: 1%;  
+}
+
+.formName {
+  margin: 8%;
+}
+
+.map {
+  width: 800px;
+  height: 500px;
+}
+
+.message {
+  width: 300px;
+}
+
+#mapid {
+  height: 500px;
+  border-radius: 10;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 800px 500px;
+}
+
+.derecha {
+  text-align: left;
+  margin-left: 10%;
+}
+
+.flights {
+  display: flex;
+  overflow: auto;
+  width: 798px;
+  border: 2px solid black;
+  white-space: nowrap;
+  margin-top: 1%;
+}
+
+.flightInfo {
+  margin: 1%;
+  padding: 1%;
+  border: 1px solid black;
+}
+
+#ulId {
+  margin: 0;
+  padding: 0;
+}
